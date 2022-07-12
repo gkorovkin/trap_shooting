@@ -36,40 +36,37 @@
 	<p>Определите стрелковые номера для генерации программы.</p>
 
 	<div>
+	  <div>
+	    <table id="results" width="100%" height="200px">
+	      <thead>
+		<tr>
+		</tr>
+	      </thead>
+
+	      <tbody>
+	      </tbody>
+	    </table>
+	  </div>
+	  
 	  <form action="" id="get_numbers">
-		<div>
-		  <input type="checkbox" id="chk_1">
-		  <label for="chk_1">Номер 1</label>
-		  <input type="checkbox" id="chk_2">
-		  <label for="chk_2">Номер 2</label>
-		  <input type="checkbox" id="chk_3">
-		  <label for="chk_3">Номер 3</label>
-		  <input type="checkbox" id="chk_4">
-		  <label for="chk_4">Номер 4</label>
-		  <input type="checkbox" id="chk_5">
-		  <label for="chk_5">Номер 5</label>
-		  <input type="checkbox" id="chk_6">
-		  <label for="chk_6">Номер 6</label>
+	    <div>
+		  <!-- <label for="chk_1">Номер 1<input type="checkbox" id="chk_1"></label> -->
+		  <!-- <label for="chk_2">Номер 2<input type="checkbox" id="chk_2"></label> -->
+		  <!-- <label for="chk_3">Номер 3<input type="checkbox" id="chk_3"></label> -->
+		  <!-- <label for="chk_4">Номер 4<input type="checkbox" id="chk_4"></label> -->
+		  <!-- <label for="chk_5">Номер 5<input type="checkbox" id="chk_5"></label> -->
+		  <!-- <label for="chk_6">Номер 6<input type="checkbox" id="chk_6"></label> -->
 		</div>
-		<input type="submit" value="Рассчитать">
+		<span>
+		<input type="submit" class="t-submit" style="color:#ffffff;background-color:#000000;" value="Рассчитать">
 	  </form>
 	</div>
   </div>
-<div>
-		<table id="results" width="100%" height="200px">
-	  <thead>
-		<tr>
-		</tr>
-	  </thead>
-
-	  <tbody>
-	  </tbody>
-	</table>
-</div>
 </div>
 
 
 <script>
+		    
   $("#get_numbers").submit(function( event ) {
       
       let positions = new Array();
@@ -110,12 +107,14 @@
 
       header.append($('<th>Стрелок</th>'));
       for (let idx = 0; idx < 25; idx++) {
-	  header.append($('<th>' + (idx + 1) + '</th>'));
+	  let th = header.append($('<th>' + (idx + 1) + '</th>'));
       }
 
       for (let [idx, programm] of collected.entries()) {
 	  let row = $('<tr class="tr_' + (idx % 2 == 0 ? 'even' : 'odd') + '"/>');
-	  row.append('<td class="td_head">' + (idx + 1) + '</td>');
+
+	  console.log(programm, programm != null);
+	  row.append('<td class="td_head"><input type="checkbox" id="chk_' + (idx + 1) + '"' + (programm != null ? 'checked' : '') +'>' + (idx + 1) + '</td>');
 
 	  for (let idx = 0; idx < 25; ++idx)
 	  {
@@ -183,6 +182,13 @@ function buildShootingPlan(positions)
 			
 //--------------
 
+  window.onload = function() {
+     
+      fillTable(buildShootingPlan([true, true, true, true, true, true]));
+      
+     
+  };  
+  
 				
 	  </script>
 
