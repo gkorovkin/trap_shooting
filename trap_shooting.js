@@ -1,9 +1,5 @@
 //--------------
-const Direction = {
-	LEFT: 1,
-	CENTER: 2,
-	RIGHT: 3
-};
+const Direction = { LEFT: 1, CENTER: 2, RIGHT: 3 };
 
 //randomize array
 function shuffleArray(array) {
@@ -14,95 +10,47 @@ function shuffleArray(array) {
         array[j] = temp;
     }
 }
-function fetchPullNumber(position, direction)
+
+const machineBin = [ Direction.LEFT, Direction.LEFT, Direction.CENTER, Direction.RIGHT, Direction.RIGHT ];
+
+//@param startingPosition - from 0 to 5 - possible starting position
+function generateProgramm(startingPosition)
 {
-	if (position < 0 || 5 < position)
+	var numbersPull = [ machineBin.slice(), machineBin.slice(), machineBin.slice(), machineBin.slice(), machineBin.slice() ];
+
+	//now shuffle within numbers
+	for (let idx = 0; idx < numbersPull.length; idx++) {
+		shuffleArray(numbersPull[idx]);
+	}	
+
+	let programm = new Array();
+	
+	//now generate whole programm
+	for (let idx = 0; idx < 25; idx++)
 	{
-		throw 'Invalid position passed ' + position;
+		let currentIteration = parseInt(idx / 5);
+		let currentPosition = (idx + startingPosition) % 5;
+		programm.push(currentPosition * 3 + numbersPull[currentPosition].pop());
 	}
 
-	return (position - 1) * 3 + direction;
+	return programm;
 }
 
-function generateShooting(positions, defaultProgramm)
+function buildShootingPlan(positions)
 {
-	let shootingPlan = new Array();
-
 	if (positions.length != 6)
 	{
 		throw 'Invalid number of positions filled';
 	}
-	let totalCount = 0;
-	let shootersCount = 0;
+
+	let shootingPlan = new Map();
 
 	for (let idx = 0; idx < positions.length; idx++)
 	{
-		let currentPrg = null;
-
-		if (positions[idx])
-		{
-			currentPrg = defaultProgramm.slice();
-			shuffleArray(currentPrg);
-			//increase shooting count
-			totalCount += currentPrg.length;
-		}
-
-		//store it
-		shootingPlan[idx] = currentPrg;
+		shootingPlan.set(idx, positions[idx] ? generateProgramm(idx) : null);
 	}
 
-	return [totalCount, shootingPlan];
+	return shootingPlan;
 }
-g
-
-//console.log(fetchPullNumber(1, Direction.RIGHT));
-function generateProgramm(shooters_positions)
-{
-
-	let standartProgramm = new Array();
-	standartProgramm = standartProgramm.concat(Array(5).fill(Direction.CENTER));
-	standartProgramm = standartProgramm.concat(Array(10).fill(Direction.LEFT));
-	standartProgramm = standartProgramm.concat(Array(10).fill(Direction.RIGHT));
-
-	let [launchCount, shootingProgram] = generateShooting( shooters_positions, standartProgramm);
-	let shootersCount = parseInt(launchCount / standartProgramm.length);
-	let shootingIsDone = false;
-	let shootingIdx = 1;
-	let currentShootingNumber = shootingProgram.keys().next().value + 1;
-	let finalShootingProgram = new Map();
-
-	while(!shootingIsDone)
-	{
-		for (let idx = 0; idx < shootingProgram.length; idx++)
-		{
-			const programm = shootingProgram[idx];
-
-			if (programm != null)
-			{
-				let shooterCurrentShot = parseInt((shootingIdx - 1)/shootersCount) + 1;
-
-				//console.log(`\tidx:${idx}, shooterCurrentShot: ${shooterCurrentShot}, currentShootingNumber:${currentShootingNumber}, pull:`, fetchPullNumber(currentShootingNumber, programm[shooterCurrentShot - 1]));
-				programm[shooterCurrentShot - 1] = fetchPullNumber(currentShootingNumber, programm[shooterCurrentShot - 1]);;
-
-				shootingIdx++;
-			}
-
-			currentShootingNumber++;
-
-			if (5 < currentShootingNumber)
-			{
-				currentShootingNumber = 1;
-			}
-		}
-
-		//console.log('-------');
-		if (shootingIdx > launchCount)
-		{
-			shootingIsDone = true;
-		}
-	}
-
-	return shootingProgram;
-}
-
-	  //generateProgramm([true, false, true, false, false, true]);
+			
+//--------------
